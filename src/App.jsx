@@ -6,6 +6,8 @@ import DashLayout from "./components/DashLayout";
 import Welcome from "./features/auth/Welcome";
 import NoteList from "./features/notes/NoteList";
 import UserList from "./features/users/UserList";
+import { store } from "./app/store";
+import { Provider } from "react-redux";
 
 function App() {
   return (
