@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 
 const Welcome = () => {
-  // Get the current date and time
   const date = new Date();
-  // Format the date and time
   const today = new Intl.DateTimeFormat("en-US", {
     dateStyle: "full",
     timeStyle: "long",
@@ -20,7 +18,15 @@ const Welcome = () => {
       </p>
 
       <p>
+        <Link to="/dash/notes/new">Add New Note</Link>
+      </p>
+
+      <p>
         <Link to="/dash/users">View User Settings</Link>
+      </p>
+
+      <p>
+        <Link to="/dash/users/new">Add New User</Link>
       </p>
     </section>
   );
