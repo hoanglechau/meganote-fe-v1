@@ -2,6 +2,7 @@ import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice";
 
 const notesAdapter = createEntityAdapter({
+  // Custom sort function to sort the notes by completed status, putting the completed notes at the bottom of the list
   sortComparer: (a, b) =>
     a.completed === b.completed ? 0 : a.completed ? 1 : -1,
 });
@@ -11,10 +12,12 @@ const initialState = notesAdapter.getInitialState();
 export const notesApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getNotes: builder.query({
-      query: () => "/notes",
-      validateStatus: (response, result) => {
-        return response.status === 200 && !result.isError;
-      },
+      query: () => ({
+        url: "/notes",
+        validateStatus: (response, result) => {
+          return response.status === 200 && !result.isError;
+        },
+      }),
       transformResponse: responseData => {
         const loadedNotes = responseData.map(note => {
           note.id = note._id;
@@ -39,6 +42,7 @@ export const notesApiSlice = apiSlice.injectEndpoints({
           ...initialNote,
         },
       }),
+      // invalidate the Note List cache
       invalidatesTags: [{ type: "Note", id: "LIST" }],
     }),
     updateNote: builder.mutation({
@@ -49,9 +53,11 @@ export const notesApiSlice = apiSlice.injectEndpoints({
           ...initialNote,
         },
       }),
+      // 'arg' is the 'initialNote', so 'arg.id' is 'initialNote.id'
       invalidatesTags: (result, error, arg) => [{ type: "Note", id: arg.id }],
     }),
     deleteNote: builder.mutation({
+      // Destructure the 'id' from the post object as we don't need the whole post object anymore
       query: ({ id }) => ({
         url: `/notes`,
         method: "DELETE",
@@ -62,6 +68,7 @@ export const notesApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
+// export the auto-generated hooks
 export const {
   useGetNotesQuery,
   useAddNewNoteMutation,
@@ -78,7 +85,7 @@ const selectNotesData = createSelector(
   notesResult => notesResult.data // normalized state object with ids & entities
 );
 
-//getSelectors creates these selectors and we rename them with aliases using destructuring
+// getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
   selectAll: selectAllNotes,
   selectById: selectNoteById,
