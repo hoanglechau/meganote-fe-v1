@@ -8,6 +8,9 @@ const Public = () => {
           Welcome to <span className="nowrap">Meganote!</span>
         </h1>
       </header>
+      <main className="public__main">
+        <p>The ultimate note taking experience!</p>
+      </main>
       <footer>
         <Link to="/login">Employee Login</Link>
       </footer>
@@ -15,4 +18,5 @@ const Public = () => {
   );
   return content;
 };
+
 export default Public;
