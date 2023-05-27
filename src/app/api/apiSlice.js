@@ -6,6 +6,7 @@ import { setCredentials } from "../../features/auth/authSlice";
 
 // Use fetchBaseQuery to create a base query that will be used for all of our requests to the baseUrl
 const baseQuery = fetchBaseQuery({
+  // TODO: Set this to the deployed API URL
   baseUrl: "http://localhost:5000",
   // 'include' credentials to send cookies with every request
   credentials: "include",
