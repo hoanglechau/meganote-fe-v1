@@ -92,3 +92,5 @@ export const {
   selectIds: selectNoteIds,
   // Pass in a selector that returns the notes slice of state
 } = notesAdapter.getSelectors(state => selectNotesData(state) ?? initialState);
+
+// Self-note: Network queries are not the same as Redux subscriptions (can be seen in the Redux DevTools). Subscriptions will last as long as the component is mounted. When the notes are queried and appear in the app, they will be subscribed to the store. Then, when checking out the notes again, a new queried will not be made since we already have the notes subscriptions in the store
