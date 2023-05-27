@@ -1,22 +1,49 @@
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectNoteById } from "./notesApiSlice";
-import { selectAllUsers } from "../users/usersApiSlice";
 import EditNoteForm from "./EditNoteForm";
+import { useGetNotesQuery } from "./notesApiSlice";
+import { useGetUsersQuery } from "../users/usersApiSlice";
+import useAuth from "../../hooks/useAuth";
+import PulseLoader from "react-spinners/PulseLoader";
+import useTitle from "../../hooks/useTitle";
 
 const EditNote = () => {
+  // Custom hook to set the title of the page
+  useTitle("Meganote: Edit Note");
+
+  // Get the id from the URL
   const { id } = useParams();
 
-  const note = useSelector(state => selectNoteById(state, id));
-  const users = useSelector(selectAllUsers);
+  // Get the username and the isManager, isAdmin statuses from the custom useAuth hook
+  const { username, isManager, isAdmin } = useAuth();
 
-  const content =
-    note && users ? (
-      <EditNoteForm note={note} users={users} />
-    ) : (
-      <p>Loading...</p>
-    );
+  // Get the note -> results in a single note
+  const { note } = useGetNotesQuery("notesList", {
+    selectFromResult: ({ data }) => ({
+      note: data?.entities[id],
+    }),
+  });
+
+  // Get the list of users -> results in an array of users
+  const { users } = useGetUsersQuery("usersList", {
+    selectFromResult: ({ data }) => ({
+      users: data?.ids.map(id => data?.entities[id]),
+    }),
+  });
+
+  // If there is no note or no users, show a loading spinner
+  if (!note || !users?.length) return <PulseLoader color={"#FFF"} />;
+
+  // If the user is not a manager or admin, and the note's username does not match the user's username, show an error message
+  if (!isManager && !isAdmin) {
+    if (note.username !== username) {
+      return <p className="errmsg">No access</p>;
+    }
+  }
+
+  // Content to be rendered
+  const content = <EditNoteForm note={note} users={users} />;
 
   return content;
 };
+
 export default EditNote;
