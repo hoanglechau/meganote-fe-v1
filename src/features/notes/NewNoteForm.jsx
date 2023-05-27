@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 
 const NewNoteForm = ({ users }) => {
+  // Get the function and the statuses after we run it from the custom hook
   const [addNewNote, { isLoading, isSuccess, isError, error }] =
     useAddNewNoteMutation();
 
@@ -32,6 +33,7 @@ const NewNoteForm = ({ users }) => {
   const onSaveNoteClicked = async e => {
     e.preventDefault();
     if (canSave) {
+      // Run the function from the custom hook and pass in the new states as arguments
       await addNewNote({ user: userId, title, text });
     }
   };
